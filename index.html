@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <link rel="stylesheet" href="styles/main.css"> -->
+    <title>Cubes</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+          background-color: #f0f0f0;
+          margin: 0px;
+          overflow: hidden;
+        }
+    </style>
+    <script src="js/three.min.js"></script>
+</head>
+
+<body>
+ 
+<div id="element">
+  <script>
+    var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.querySelector("#element").appendChild( renderer.domElement );
+
+  var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
+  camera.position.set( 0, 0, 100 );
+  camera.lookAt( 0, 0, 0 );
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color( "whitesmoke" ); //0x8FBCD4
+  //Next thing we will do is define a material. For lines we have to use LineBasicMaterial or LineDashedMaterial.
+
+  //create a blue LineBasicMaterial
+  var material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+  //After material we will need a Geometry or BufferGeometry with some vertices (it's recommended to use a BufferGeometry as it's more performant, however for simplicity we'll use a Geometry here):
+
+  function one_cube(numb_x=10, numb_y=10, numb_z=15) {
+    var geo_n = new THREE.Geometry();
+    geo_n.vertices.push(new THREE.Vector3( -numb_x, 0, 0) );
+    geo_n.vertices.push(new THREE.Vector3( 0, numb_y, 0) );
+    geo_n.vertices.push(new THREE.Vector3( numb_x, 0, 0) );
+    geo_n.vertices.push(new THREE.Vector3( 0, -numb_y, 0) );
+    geo_n.vertices.push(new THREE.Vector3( -numb_x, 0, 0) );
+    geo_n.vertices.push(new THREE.Vector3( -numb_x, 0, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( 0, numb_y, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( numb_x, 0, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( 0, -numb_y, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( -numb_x, 0, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( -numb_x, 0, 0) );
+    geo_n.vertices.push(new THREE.Vector3( 0, numb_y, 0) );
+    geo_n.vertices.push(new THREE.Vector3( 0, numb_y, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( numb_x, 0, numb_z) );
+    geo_n.vertices.push(new THREE.Vector3( numb_x, 0, 0) );
+    geo_n.vertices.push(new THREE.Vector3( 0, -numb_y, 0) );
+    geo_n.vertices.push(new THREE.Vector3( 0, -numb_y, numb_z) );
+
+    return geo_n;
+  }
+  //Note that lines are drawn between each consecutive pair of vertices, but not between the first and last (the line is not closed.)
+  //Now that we have points for two lines and a material, we can put them together to form a line.
+
+  //All that's left is to add it to the scene and call render.
+  var geo = new THREE.SphereGeometry( 1, 32, 32 );
+  var mat = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+  var sphere = new THREE.Mesh( geo, mat );
+  sphere.position.x = 25;
+  scene.add( sphere );
+
+  var geometry = one_cube();
+  var geometry2 = one_cube( 9,9,14 );
+
+  var line = new THREE.Line( geometry, material );
+  var line2 = new THREE.Line( geometry2, material );
+  line2.position.x = 25;
+
+  scene.add( line );
+  scene.add( line2 );
+
+  animate();
+
+  function animate() {
+          // note: three.js includes requestAnimationFrame shim
+          requestAnimationFrame( animate );
+          render();
+      }
+
+  function render() {
+      line.rotation.x += 0.01;
+      line.rotation.y += 0.02;
+      line2.rotation.y += 0.01;
+      line2.rotation.x += 0.02;
+      renderer.render( scene, camera );
+    }
+
+  document.querySelector("#element").onclick = function () {
+  line.material = new THREE.LineBasicMaterial( { color: 0x00ff00} )
+   // scene.background = new THREE.Color( 0x00ff00 );
+   console.log("here");
+ 
+ // scene.add( line );
+ // animate();
+}
+  </script>
+</div>
+</body>
+</html>
