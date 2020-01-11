@@ -6,8 +6,9 @@ var scene, camera, renderer, domEvents
 function init() {
   //////////Задал основные константы///////
   const cubes_maximum = Math.floor(Math.random() * 15) + 2 //произвольное количество кубов, но не меньше 2
-
+  const range_of_positions = 100 // разлёт появления кубов (квадрат с серединой в центре)
   const cube_color = 0x000000 //цвет рёбер куба по умолчанию
+  const rotation_speed = 250; //чем выше значение, тем медленнее
 
   var edge = [] //двумерный массив для рёбер кубов
   var spheres = [] //двумерный массив для сфер кубов
@@ -27,8 +28,8 @@ function init() {
   
   //настроил параметры камеры
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
-  camera.position.set( 50, 50, 150 ) //позиция камеры
-  camera.lookAt( 50, 50, 0 ) //смотреть в центр координат
+  camera.position.set( 0, 0, 150 ) //позиция камеры
+  camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
   
   //выбрал рендер
   renderer = new THREE.WebGLRenderer()
@@ -122,7 +123,10 @@ function init() {
     cube_with_spheres_in_corner[next].add(spheres_in_corner)
 
     //задание рандомной позиции в пространстве координат
-    cube_with_spheres_in_corner[next].position.set( Math.random()*100, Math.random()*100, Math.random()*25)
+    cube_with_spheres_in_corner[next].position.set(
+    												Math.random() * range_of_positions - range_of_positions/2,  // X
+    												Math.random() * range_of_positions - range_of_positions/2,  // Y
+    												Math.random() * range_of_positions / 4 ) // Z
 
   }
   
@@ -146,15 +150,18 @@ function init() {
   function render() {
   
     //задание значений для поворота объекта
-    function rotation( name_of_object, x, y ) {
+    function rotation( name_of_object, x, y, speed ) {
     
-      name_of_object.rotation.x += x/200
-      name_of_object.rotation.y += y/200
+      name_of_object.rotation.x += x/speed
+      name_of_object.rotation.y += y/speed
     
     }
 
     for (let i=0; i < cubes_maximum; i++) //нечетные крутятся в другую сторону
-      rotation( cube_with_spheres_in_corner[i], (i%2)? 2 : -1, (i%2)? 1 : -2 )
+      rotation( cube_with_spheres_in_corner[i],
+      			(i%2)? 2 : -1, //x-rotation
+      			(i%2)? 1 : -2, //y-rotation
+      			rotation_speed )
 
     renderer.render( scene, camera )
   
