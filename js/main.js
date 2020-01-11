@@ -5,7 +5,7 @@ var scene, camera, renderer, domEvents
 
 function init() {
   //////////Задал основные константы///////
-  const cubes_maximum = Math.floor(Math.random() * 20) + 2 //произвольное количество кубов, но не меньше 2
+  const cubes_maximum = Math.floor(Math.random() * 15) + 2 //произвольное количество кубов, но не меньше 2
 
   const cube_color = 0x000000 //цвет рёбер куба по умолчанию
 
@@ -122,7 +122,7 @@ function init() {
     cube_with_spheres_in_corner[next].add(spheres_in_corner)
 
     //задание рандомной позиции в пространстве координат
-    cube_with_spheres_in_corner[next].position.set( Math.random()*50, Math.random()*50, Math.random()*25)
+    cube_with_spheres_in_corner[next].position.set( Math.random()*100, Math.random()*100, Math.random()*25)
 
   }
   
