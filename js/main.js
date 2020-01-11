@@ -27,7 +27,7 @@ function init() {
   
   //настроил параметры камеры
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
-  camera.position.set( 0, 0, 150 ) //позиция камеры
+  camera.position.set( 50, 50, 150 ) //позиция камеры
   camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
   
   //выбрал рендер
