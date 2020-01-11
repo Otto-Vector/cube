@@ -5,7 +5,7 @@ var scene, camera, renderer, domEvents
 
 function init() {
   //////////Задал основные константы///////
-  const cubes_maximum = Math.floor(Math.random() * 10) + 2 //произвольное количество кубов, но не меньше 2
+  const cubes_maximum = Math.floor(Math.random() * 20) + 2 //произвольное количество кубов, но не меньше 2
 
   const cube_color = 0x000000 //цвет рёбер куба по умолчанию
 
@@ -148,8 +148,8 @@ function init() {
     //задание значений для поворота объекта
     function rotation( name_of_object, x, y ) {
     
-      name_of_object.rotation.x += x/100
-      name_of_object.rotation.y += y/100
+      name_of_object.rotation.x += x/200
+      name_of_object.rotation.y += y/200
     
     }
 
