@@ -40,7 +40,7 @@ function init() {
 
   //добавление скрипта к документу в тег
   document.body.appendChild( renderer.domElement )
-  
+
   window.addEventListener('resize', onWindowResize, false)
 
   ///////////МАНИПУЛЯЦИЯ СЦЕНОЙ // также активация внутри функции render строкой controls.update()
@@ -59,7 +59,7 @@ function init() {
     for (let i = 0 ; i < communication_array.length ; i++ ) {
 
       geometry_for_line[i] = new THREE.Geometry();
-      
+
       x_start = numb_x * points_array [ communication_array[i][0] ] [0];
       y_start = numb_y * points_array [ communication_array[i][0] ] [1];
       z_start = numb_z * points_array [ communication_array[i][0] ] [2];
@@ -109,7 +109,7 @@ function init() {
 
     return sphere
   }
-  
+
   //////////////////////////////////////////////////////////////////////
 
   //Cоздание куба из линий массива в группу///
@@ -132,39 +132,45 @@ function init() {
     cube_with_spheres_in_corner[next].add(edge_cube)
     cube_with_spheres_in_corner[next].add(spheres_in_corner)
 
+    //задаёт случайное положение в координатах от середины
+    let rand_x_y_z = (ranges) => {
+      return Math.random() * ranges - ranges/2
+    }
+
     //задание рандомной позиции в пространстве координат
     cube_with_spheres_in_corner[next].position.set(
-    												Math.random() * range_of_positions - range_of_positions/2,  // X
-    												Math.random() * range_of_positions - range_of_positions/2,  // Y
-    												Math.random() * range_of_positions / 4 ) // Z
+      rand_x_y_z(range_of_positions),    // X
+      rand_x_y_z(range_of_positions),    // Y
+      rand_x_y_z(range_of_positions/2) ) // Z
 
   }
-  
+
+
   /////добавление объектов на экран//////////
     for (var next=0; next < cubes_maximum; next++) {
       complete_to_object(next);
       scene.add( cube_with_spheres_in_corner[next] )
     }
-  
+
 
   ////анимация объектов////////////////////
   animate()
 
   function animate() {
-  
+
     requestAnimationFrame( animate )
     render()
-  
+
   }
 
   function render() {
-  
+
     //задание значений для поворота объекта
     function rotation( name_of_object, x, y, speed ) {
     
       name_of_object.rotation.x += x/1000*speed
       name_of_object.rotation.y += y/1000*speed
-    
+
     }
 
     for (let i=0; i < cubes_maximum; i++) //нечетные крутятся в другую сторону
@@ -176,8 +182,8 @@ function init() {
     controls.update() //манипуляция со сценой
 
     renderer.render( scene, camera )
-  
-  }
+
+    }
 
 
   ///////// применил отслеживание по клику с помощью библиотеки threex.domevents.js ////////
@@ -193,19 +199,22 @@ function init() {
 
   var spheres_color_to_edges = (event) => {
 
-        for (let n = 0; n < cubes_maximum; n++) {
-          //проверяет на какую из сфер было нажато и передаёт значение индекса в found_at
-          var found_at = [];
-          for (let i = 0; i < spheres[n].length; i++ ) {
-            found_at[n] = ( event.target.uuid == spheres[n][i].uuid ) ? i : found_at[n];
-          }
-          //перекраска рёбер, исходящих из нажатой сферы в её цвет
-          for (let i = 0; i < communication_array.length; i++) { //сверяется по массиву communication_array
-              if ( communication_array[i][0] == found_at[n] || communication_array[i][1] == found_at[n] )
-              edge[n][i].material.color.set(spheres[n][found_at[n]].material.color)
-          }
-        }
+    for (let n = 0; n < cubes_maximum; n++) {
+
+      //проверяет на какую из сфер было нажато и передаёт значение индекса в found_at[]
+      let found_at = [];
+      for (let i = 0; i < spheres[n].length; i++ ) {
+        found_at[n] = ( event.target.uuid == spheres[n][i].uuid ) ? i : found_at[n];
       }
+
+      //перекраска рёбер, исходящих из нажатой сферы в её цвет
+      for (let i = 0; i < communication_array.length; i++) { //сверяется по массиву communication_array
+        if ( communication_array[i][0] == found_at[n] || communication_array[i][1] == found_at[n] )
+        edge[n][i].material.color.set(spheres[n][found_at[n]].material.color)
+      }
+    }
+
+  }
 
 }
 
