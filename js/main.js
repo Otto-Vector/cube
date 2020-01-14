@@ -190,34 +190,36 @@ function init() {
   ///////// применил отслеживание по клику с помощью библиотеки threex.domevents.js ////////
   var domEvents = new THREEx.DomEvents(camera, renderer.domElement)
 
-  for (let n = 0; n < cubes_maximum; n++) {
-    for (let sphere_num = 0; sphere_num < spheres[n].length; sphere_num++) {
+  //назначил перебором отслеживание событий на каждую сферу
+  for (let n = 0; n < cubes_maximum; n++) //перебор по количеству собранных кубов
+    for (let sphere_num = 0; sphere_num < spheres[n].length; sphere_num++)
+      domEvents.addEventListener( spheres[n][sphere_num], 'mousedown', (event)=> {spheres_color_to_edges(event)})
 
-      domEvents.addEventListener( spheres[n][sphere_num], 'click', (event)=> {spheres_color_to_edges(event)})
 
-    }
-  }
-
+  //функция перекраски рёбер в найденой в domEvents
   var spheres_color_to_edges = (event) => {
 
-    for (let n = 0; n < cubes_maximum; n++) {
+    for (let n = 0; n < cubes_maximum; n++) { //перебор по количеству собранных кубов
 
       //проверяет на какую из сфер было нажато и передаёт значение индекса в found_at[]
       let found_at = [];
-      for (let i = 0; i < spheres[n].length; i++ ) {
+      for (let i = 0; i < spheres[n].length; i++ )
         found_at[n] = ( event.target.uuid == spheres[n][i].uuid ) ? i : found_at[n];
+
+        //перекраска рёбер, исходящих из нажатой сферы в её цвет
+        if ( found_at[n] !== undefined ) //убираем ненужные проверки при неназначенных found_at[]
+          for (let i = 0; i < communication_array.length; i++) //сверяется по массиву communication_array
+            //если одна из сторон вектора принадлежит номерной области сферы, то...
+            if ( communication_array[i][0] == found_at[n] || communication_array[i][1] == found_at[n] ) {
+              edge[n][i].material.color.set(spheres[n][found_at[n]].material.color) //...перекрашиваем в цвет найденной сферы
+              n = cubes_maximum //завершаем родительский цикл, так как "дело сделано"
+             }
       }
 
-      //перекраска рёбер, исходящих из нажатой сферы в её цвет
-      for (let i = 0; i < communication_array.length; i++) { //сверяется по массиву communication_array
-        if ( communication_array[i][0] == found_at[n] || communication_array[i][1] == found_at[n] )
-        edge[n][i].material.color.set(spheres[n][found_at[n]].material.color)
-      }
     }
 
-  }
 
-}
+} //init() end bracket
 
 /////функция изменения центровки камеры при изменении размера экрана///////////////
 function onWindowResize() {
