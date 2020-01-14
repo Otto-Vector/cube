@@ -1,7 +1,7 @@
 
 window.onload = init
 
-var scene, camera, renderer, domEvents
+var scene, camera, renderer, domEvents, controls
 
 function init() {
 
@@ -9,7 +9,8 @@ function init() {
   const cubes_maximum = Math.floor(Math.random() * 15) + 2 //произвольное количество кубов, но не меньше 2
   const range_of_positions = 100 // разлёт появления кубов в пикселях (квадрат с серединой в центре)
   const cube_color = 0x000000 //цвет рёбер куба по умолчанию
-  const rotation_speed = 5; //значение скорости вращения для (опция)
+  const rotation_speed = 5 //значение скорости вращения для (опция)
+  const max_scene_size = 500 //максимальный размер сцены и отдаления
 
   var edge = [] //двумерный массив для рёбер кубов
   var spheres = [] //двумерный массив для сфер кубов
@@ -28,7 +29,7 @@ function init() {
   scene.background = new THREE.Color( "whitesmoke" ) //задал сцене задний фон
 
   //настроил параметры камеры
-  camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 )
+  camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, max_scene_size )
   camera.position.set( 0, 0, 150 ) //позиция камеры
   camera.lookAt( 0, 0, 0 ) //смотреть в центр координат
 
@@ -42,6 +43,10 @@ function init() {
   
   window.addEventListener('resize', onWindowResize, false)
 
+  ///////////МАНИПУЛЯЦИЯ СЦЕНОЙ // также активация внутри функции render строкой controls.update()
+  controls = new THREE.OrbitControls (camera, renderer.domElement);
+  controls.minDistance = 1
+  controls.maxDistance = max_scene_size
 
   ///////////////////////////////////////////////////////////////////////////////
   //конструктор линий для куба
@@ -85,7 +90,7 @@ function init() {
 
   ////////функция сборки сфер по углам куба////////////////
 
-   var spheres_for_cube = function(numb_x = 10, numb_y = numb_x, numb_z = numb_x * 1.5) {
+   var spheres_for_cube = (numb_x = 10, numb_y = numb_x, numb_z = numb_x * 1.5) => {
 
     let geo = new THREE.SphereGeometry( numb_x * 0.13, 32, 32 ) //меняет размер в зависимости от величины квадрата
     let sphere = []
@@ -108,7 +113,7 @@ function init() {
   //////////////////////////////////////////////////////////////////////
 
   //Cоздание куба из линий массива в группу///
-  var complete_to_object = function (next) {
+  var complete_to_object = (next) => {
 
     //объявление переменных
     let edge_cube = new THREE.Group()
@@ -168,6 +173,8 @@ function init() {
         (i%2)? 1 : -2, //y-rotation
         rotation_speed )
 
+    controls.update() //манипуляция со сценой
+
     renderer.render( scene, camera )
   
   }
@@ -179,7 +186,12 @@ function init() {
   for (let n = 0; n < cubes_maximum; n++) {
     for (let sphere_num = 0; sphere_num < spheres[n].length; sphere_num++) {
 
-      domEvents.addEventListener( spheres[n][sphere_num], 'click', (event) => {
+      domEvents.addEventListener( spheres[n][sphere_num], 'click', (event)=> {spheres_color_to_edges(event)})
+
+    }
+  }
+
+  var spheres_color_to_edges = (event) => {
 
         for (let n = 0; n < cubes_maximum; n++) {
           //проверяет на какую из сфер было нажато и передаёт значение индекса в found_at
@@ -193,11 +205,7 @@ function init() {
               edge[n][i].material.color.set(spheres[n][found_at[n]].material.color)
           }
         }
-      })
-
-    }
-  }
-
+      }
 
 }
 
