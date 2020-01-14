@@ -43,7 +43,8 @@ function init() {
 
   window.addEventListener('resize', onWindowResize, false)
 
-  ///////////МАНИПУЛЯЦИЯ СЦЕНОЙ // также активация внутри функции render строкой controls.update()
+  ///////////МАНИПУЛЯЦИЯ СЦЕНОЙ
+  // также активация внутри функции render() и onwindowresize() строкой controls.update()
   controls = new THREE.OrbitControls (camera, renderer.domElement);
   controls.minDistance = 1
   controls.maxDistance = max_scene_size
@@ -92,7 +93,7 @@ function init() {
 
    var spheres_for_cube = (numb_x = 10, numb_y = numb_x, numb_z = numb_x * 1.5) => {
 
-    let geo = new THREE.SphereGeometry( numb_x * 0.13, 32, 32 ) //меняет размер в зависимости от величины квадрата
+    let geo = new THREE.SphereGeometry( numb_x * 0.13, 32, 32 ) //меняет размер в зависимости от величины куба
     let sphere = []
 
     for (var i = 0; i < points_array.length; i++) {
@@ -221,9 +222,10 @@ function init() {
 /////функция изменения центровки камеры при изменении размера экрана///////////////
 function onWindowResize() {
 
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth-4, window.innerHeight-4)
 
-  renderer.setSize(window.innerWidth-4, window.innerHeight-4);
-  
+  controls.update() //для сохранения пропорций при динамическом изменении ширины экрана
+
 }
