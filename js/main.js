@@ -207,13 +207,15 @@ function init() {
         found_at[n] = ( event.target.uuid == spheres[n][i].uuid ) ? i : found_at[n];
 
         //перекраска рёбер, исходящих из нажатой сферы в её цвет
-        if ( found_at[n] !== undefined ) //убираем ненужные проверки при неназначенных found_at[]
+        if ( found_at[n] !== undefined ){ //убираем ненужные проверки при неназначенных found_at[]
           for (let i = 0; i < communication_array.length; i++) //сверяется по массиву communication_array
+
             //если одна из сторон вектора принадлежит номерной области сферы, то...
-            if ( communication_array[i][0] == found_at[n] || communication_array[i][1] == found_at[n] ) {
+            if ( communication_array[i][0] == found_at[n] || communication_array[i][1] == found_at[n] )
               edge[n][i].material.color.set(spheres[n][found_at[n]].material.color) //...перекрашиваем в цвет найденной сферы
-              n = cubes_maximum //завершаем родительский цикл, так как "дело сделано"
-             }
+
+          n = cubes_maximum //завершаем родительский цикл, так как "дело сделано"
+        }
       }
 
     }
